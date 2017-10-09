@@ -13,11 +13,10 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class RestProvider {
   data
-  apiUrl 	  	= "http://map.eidaramata.com/auth/";
-  base_url   	= "http://map.eidaramata.com/"
-  
+  apiUrl 	  = "http://map.eidaramata.com/auth/";
+  base_url   = "http://map.eidaramata.com/"
   constructor(public http: Http) {
-    console.log('Hello RestProvider Provider');
+  //  console.log('Hello RestProvider Provider');
   }
 restGet(type){
   return new Promise(resolve => {

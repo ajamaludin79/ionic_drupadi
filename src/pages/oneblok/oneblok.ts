@@ -3,6 +3,7 @@ import { MenuController,  NavController, NavParams } from 'ionic-angular';
 import { OneinfoPage } from '../oneinfo/oneinfo';
 import { OnetindakanPage } from '../onetindakan/onetindakan';
 import { OnekomentarPage } from '../onekomentar/onekomentar';
+import { RestProvider } from '../../providers/rest/rest'
 /**
  * Generated class for the OneblokPage page.
  *
@@ -18,9 +19,27 @@ export class OneblokPage {
   tab1Root = OneinfoPage;
   tab2Root = OnetindakanPage;
   tab3Root = OnekomentarPage;
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController) {
-        this.menu.swipeEnable(false);
+  mapData = { "area_id": "", "action": "", "token" : ""};
+  areas :any;
+  userDetails: any;
+  responseData: any;
+  constructor(public navCtrl: NavController, public navParams: NavParams, public menu: MenuController, public rest: RestProvider) {
+	this.menu.swipeEnable(false);
+	this.navParams.data  = navParams.get('area_id');
+		
+	const data = JSON.parse(localStorage.getItem('userData'));
+    this.userDetails 		= data.userData;
+    this.mapData.username 	= this.userDetails.username;
+    this.mapData.token 		= this.userDetails.token;
+	this.area_id 			= this.navParams.data
+	
+    this.mapData.action = "ionic_maps";	
+	this.rest.PolygonPost(this.mapData,"maps/welcome/get_maps_info").then((result) => {
+		this.responseData = result;
+		localStorage.setItem('info', JSON.stringify(this.responseData));
+		this.areas 		= this.responseData.area;		
+	});
+	   
   }
 
 }

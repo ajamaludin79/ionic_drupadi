@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { MenuController, NavController, NavParams } from 'ionic-angular';
 import { RestProvider } from '../../providers/rest/rest'
+import { OneblokPage } from '../oneblok/oneblok';
 
 /**
  * Generated class for the OneinfoPage page.
@@ -15,9 +16,19 @@ import { RestProvider } from '../../providers/rest/rest'
   templateUrl: 'oneinfo.html',
 })
 export class OneinfoPage {
-info = {"user_id" : "" }
-responseData : any
-  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider) {
+  type :any;
+  mtanam :any;
+  statusn :any;  
+  area :any;
+  responseData: any;
+  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider, public menu: MenuController) {
+    this.menu.swipeEnable(false);
+    //this.infoData.area_id = navParams.data;
+    const data = JSON.parse(localStorage.getItem('info'));
+    this.mtanam 	= data.m_tanam;
+	this.type 		= data.type; 
+	this.statusn 	= data.status; 
+	this.area 		= data.area; 
   }
 
   ionViewDidLoad() {
