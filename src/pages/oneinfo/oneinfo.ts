@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { RestProvider } from '../../providers/rest/rest'
 
 /**
  * Generated class for the OneinfoPage page.
@@ -8,18 +9,23 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
+//@IonicPage()
 @Component({
   selector: 'page-oneinfo',
   templateUrl: 'oneinfo.html',
 })
 export class OneinfoPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+info = {"user_id" : "" }
+responseData : any
+  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad OneinfoPage');
+    /*console.log('ionViewDidLoad OneinfoPage');
+    this.rest.infoPost({ "action": "mapionic"},"maps/welcome/ionic_maps").then((result) => {
+    this.responseData = result;
+    console.log(this.responseData)
+      });*/
   }
 
 }
