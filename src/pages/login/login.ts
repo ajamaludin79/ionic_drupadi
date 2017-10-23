@@ -15,12 +15,12 @@ import { HomePage } from '../home/home'
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  userD = { "username": "", "password": "" };
+  userDrupadi = { "username": "", "password": "" };
   responseData: any;
   loading: any;
   pesan: any;
   constructor(public navCtrl: NavController, public navParams: NavParams, public rest:RestProvider, private toastCtrl: ToastController, public loadingCtrl: LoadingController) {
-    if(localStorage.getItem('userData')){
+    if(localStorage.getItem('userDrupadi')){
       this.navCtrl.setRoot(HomePage);
     }
   }
@@ -29,24 +29,25 @@ export class LoginPage {
   //  console.log('ionViewDidLoad LoginPage');
   }
   login() {
-
-    if (this.userD.username && this.userD.password) {
-      this.rest.restPost(this.userD, "ionlogin").then((result) => {
+    this.showLoader();
+    this.userDrupadi.username = this.userDrupadi.username.toLowerCase()
+    //console.log(this.userDrupadi)
+    if (this.userDrupadi.username && this.userDrupadi.password) {
+      this.rest.restPost(this.userDrupadi, "auth/ionlogin").then((result) => {
         this.responseData = result;
-        //console.log(this.responseData);
+        console.log(this.responseData);
         if (this.responseData.userData) {
-          this.showLoader();
-          localStorage.setItem('userData', JSON.stringify(this.responseData));
-          this.loading.dismiss();
+          localStorage.setItem('userDrupadi', JSON.stringify(this.responseData));
           this.navCtrl.setRoot(HomePage);
+          this.loading.dismiss();
         }
         else {
           this.presentToast("Silahkan isi username dan password dengan benar");
+          this.loading.dismiss();
         }
       }, (err) => {
-        this.showLoader();
-        this.loading.dismiss();
         this.presentToast("Tidak terhubung ke server");
+        this.loading.dismiss();
       });
     }
     else {
@@ -56,7 +57,6 @@ export class LoginPage {
   showLoader() {
     this.loading = this.loadingCtrl.create({
       content: 'Authentication...',
-      duration: 3000,
     });
 
     this.loading.present();

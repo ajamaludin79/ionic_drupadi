@@ -9,14 +9,15 @@ import { BantuanPage } from '../pages/bantuan/bantuan';
 import { OneblokPage } from '../pages/oneblok/oneblok';
 import { OneinfoPage } from '../pages/oneinfo/oneinfo';
 import { OnetindakanPage } from '../pages/onetindakan/onetindakan';
-import { OnekomentarPage } from '../pages/onekomentar/onekomentar';
+import { OnephotoPage } from '../pages/onephoto/onephoto';
 import { RinfoPage } from '../pages/rinfo/rinfo';
 import { RtindakanPage } from '../pages/rtindakan/rtindakan';
 import { RkomentarPage } from '../pages/rkomentar/rkomentar';
 import { LoginPage } from '../pages/login/login'
 import { PenggunaPage } from '../pages/pengguna/pengguna'
+import { ModalPage } from '../pages/modal/modal'
 
-
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { HttpModule } from "@angular/http";
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -32,12 +33,13 @@ import { RestProvider } from '../providers/rest/rest';
     OneblokPage,
     OneinfoPage,
     OnetindakanPage,
-    OnekomentarPage,
+    OnephotoPage,
     RinfoPage,
     RtindakanPage,
     RkomentarPage,
     LoginPage,
-    PenggunaPage
+    PenggunaPage,
+    ModalPage
   ],
   imports: [
     BrowserModule, HttpModule,
@@ -52,19 +54,22 @@ import { RestProvider } from '../providers/rest/rest';
     OneblokPage,
     OneinfoPage,
     OnetindakanPage,
-    OnekomentarPage,
+    OnephotoPage,
     RinfoPage,
     RtindakanPage,
     RkomentarPage,
     LoginPage,
-    PenggunaPage
+    PenggunaPage,
+    ModalPage
   ],
   providers: [
     Camera,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    RestProvider
+    RestProvider,
+    FileTransfer,
+    FileTransferObject,
   ]
 })
 export class AppModule {}

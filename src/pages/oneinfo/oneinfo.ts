@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { MenuController, NavController, NavParams } from 'ionic-angular';
+import { MenuController, NavController, NavParams, LoadingController,  ToastController } from 'ionic-angular';
 import { RestProvider } from '../../providers/rest/rest'
-import { OneblokPage } from '../oneblok/oneblok';
+//import { OneblokPage } from '../oneblok/oneblok';
 
 /**
  * Generated class for the OneinfoPage page.
@@ -16,27 +16,71 @@ import { OneblokPage } from '../oneblok/oneblok';
   templateUrl: 'oneinfo.html',
 })
 export class OneinfoPage {
-  type :any;
-  mtanam :any;
-  statusn :any;  
-  area :any;
+  type: any;
+  mtanam: any;
+  statusn: any;
+  area: any;
   responseData: any;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider, public menu: MenuController) {
+  userDetails: any;
+  loading:any
+  mapData = { "area_id": "", "username": "", "action": "", "token": "" };
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider, public menu: MenuController, public loadingCtrl: LoadingController, private toastCtrl: ToastController) {
     this.menu.swipeEnable(false);
-    //this.infoData.area_id = navParams.data;
-    const data = JSON.parse(localStorage.getItem('info'));
-    this.mtanam 	= data.m_tanam;
-	this.type 		= data.type; 
-	this.statusn 	= data.status; 
-	this.area 		= data.area; 
+    this.mapData.area_id = navParams.data;
+    const data = JSON.parse(localStorage.getItem('userDrupadi'));
+    this.userDetails = data.userData;
+    this.mapData.username = this.userDetails.username;
+    this.mapData.token = this.userDetails.token;
+    this.mapData.area_id = this.navParams.data
+    this.mapData.action = "ionic_maps";
+    //console.log(this.mapData)
   }
 
   ionViewDidLoad() {
-    /*console.log('ionViewDidLoad OneinfoPage');
-    this.rest.infoPost({ "action": "mapionic"},"maps/welcome/ionic_maps").then((result) => {
+      this.showInfo()
+  }
+  showLoader() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Loading..',
+    });
+
+    this.loading.present();
+  }
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'bottom',
+      dismissOnPageChange: true
+    });
+
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+
+    toast.present();
+  }
+showInfo(){
+  /*const data = JSON.parse(localStorage.getItem('info'));
+  this.mtanam = data.m_tanam;
+  this.type = data.type;
+  this.statusn = data.status;
+  this.area = data.area;*/
+  this.showLoader()
+  this.rest.restPost(this.mapData, "maps/welcome/get_maps_info").then((result) => {
     this.responseData = result;
     console.log(this.responseData)
-      });*/
-  }
+    localStorage.setItem('info', JSON.stringify(this.responseData.area_id));
+    this.mtanam = this.responseData.m_tanam;
+    this.type = this.responseData.type;
+    this.statusn = this.responseData.status;
+    this.area = this.responseData.area;
+    this.loading.dismiss();
+  }, (err) => {
+      this.presentToast("Tidak terhubung ke server");
+      this.loading.dismiss();
+    });
 
+}
 }
