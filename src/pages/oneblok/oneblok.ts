@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { MenuController, NavController, NavParams, LoadingController,  ToastController } from 'ionic-angular';
 import { OneinfoPage } from '../oneinfo/oneinfo';
 import { OnetindakanPage } from '../onetindakan/onetindakan';
-import { OnephotoPage } from '../onephoto/onephoto';
 import { RestProvider } from '../../providers/rest/rest'
 /**
  * Generated class for the OneblokPage page.
@@ -18,7 +17,6 @@ export class OneblokPage {
 
   tab1Root = OneinfoPage;
   tab2Root = OnetindakanPage;
-  tab3Root = OnephotoPage;
   mapData = { "area_id": "", "username": "", "action": "", "token": "" };
   areas: any;
   userDetails: any;

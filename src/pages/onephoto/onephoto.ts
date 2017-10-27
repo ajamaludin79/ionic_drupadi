@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, NavParams, ToastController } from 'ionic-angular';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { NavController, LoadingController, NavParams, ToastController, ViewController, ModalController, AlertController } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { RestProvider } from '../../providers/rest/rest'
+import { GantiphotoPage } from '../gantiphoto/gantiphoto'
+
 
 
 
@@ -20,28 +21,85 @@ import { RestProvider } from '../../providers/rest/rest'
 })
 export class OnephotoPage {
   public base64Image: string;
-  imageFileName: any;  
-  userDetails: any;		
-  action_id: any;		
-  Photo = {"username": "", "token": "", "act_id": "","img" : ""};
+  userDetails: any;
+  action_id: any;
+  Photo = { "username": "", "token": "", "act_id": "", "img": "", "area_id": "" };
   responseData: any;
   loading: any
-  constructor(public navCtrl: NavController, public navParams: NavParams, public camera: Camera, public loadingCtrl: LoadingController, public toastCtrl: ToastController, public transfer: FileTransfer, public rest: RestProvider) {   
-	
-	this.Photo.act_id   	= '1710002';  
-	const data 				= JSON.parse(localStorage.getItem('userDrupadi')); 	
-	this.userDetails 		= data.userData;
-	this.Photo.username 	= this.userDetails.username;
-	this.Photo.token 		= this.userDetails.token;  
+  imagePath
+  imagePath1
+  Path
+  Photos
+  resultgantip
+  area_ids
+  result_path
+  constructor(public navCtrl: NavController, public navParams: NavParams, public camera: Camera, public loadingCtrl: LoadingController, public toastCtrl: ToastController, public rest: RestProvider, public viewCtrl: ViewController, public modalCtrl: ModalController, public alertCtrl: AlertController) {
+
+
+    this.imagePath = navParams.get('imagePath');
+    this.action_id = navParams.get('action_id');
+    this.area_ids  = navParams.get('area_id');
+    this.Photo.area_id = this.area_ids
+    //console.log(this.imagePath)
+    /*this.imagePath = navParams.get('imagePath');
+    this.Path = navParams.get('Path');
+    this.action_id = navParams.get('action_id');
+    this.Photos = this.Path + this.imagePath;*/
+    this.Photo.act_id = this.action_id;
+    const data = JSON.parse(localStorage.getItem('userDrupadi'));
+    this.userDetails = data.userData;
+    this.Photo.username = this.userDetails.username;
+    this.Photo.token = this.userDetails.token;
+    //console.log(this.Photo)
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad OnekomentarPage');
+    this.resultImage();
+    this.resultgantip = this.resultgantip;
+  }
+  resultImage() {
+    this.showLoader('Loading...')
+    var gantiimg = this.resultgantip
+    //console.log(gantiimg)
+    var resultone = this.navParams.get('resultPath');
+    //console.log(resultone)
+    this.imagePath = this.navParams.get('imagePath');
+
+    if (gantiimg != (null && '' && undefined)) {
+      this.imagePath1 = gantiimg
+      this.Path = this.navParams.get('Path');
+      this.Photos = this.Path + gantiimg;
+      this.loading.dismiss();
+      console.log("1", this.imagePath)
+    } else if ((this.imagePath) != ('' && null)) {
+      this.imagePath1 = this.imagePath
+      this.Path = this.navParams.get('Path');
+      this.Photos = this.Path + this.imagePath1;
+      this.loading.dismiss();
+      console.log("2")
+    } else if (resultone != (null && '' && undefined)) {
+      this.imagePath1 = resultone
+      this.Path = this.navParams.get('Path');
+      this.Photos = this.Path + resultone;
+      this.loading.dismiss();
+      console.log("3", this.imagePath)
+    } else if (this.imagePath == '') {
+      this.imagePath1 = this.imagePath
+      this.loading.dismiss();
+      console.log("4", this.imagePath)
+    } else {
+      this.imagePath1 = this.imagePath
+      this.loading.dismiss();
+      console.log("5", this.imagePath)
+    }
+  }
+  dismiss(img) {
+    this.viewCtrl.dismiss(img);
   }
   presentToast(msg) {
     let toast = this.toastCtrl.create({
       message: msg,
-      duration: 6000,
+      duration: 4000,
       position: 'bottom'
     });
 
@@ -51,71 +109,70 @@ export class OnephotoPage {
 
     toast.present();
   }
-  showLoader() {
+  showLoader(msg) {
     this.loading = this.loadingCtrl.create({
-      content: 'Uploading...',
+      content: msg,
     });
 
     this.loading.present();
   }
-  takePicture() {
 
+  gantiPhoto(action_id: any, area_ids:any) {
+    console.log(action_id, area_ids)
+    const modal = this.modalCtrl.create(GantiphotoPage, { action_id: action_id, area_ids: area_ids });
+    modal.onDidDismiss(data => {
+      this.resultgantip = data
+      this.ionViewDidLoad()
+    })
+    modal.present();
+  }
+
+  takePicture() {
+    this.showLoader('Loading...')
     const options: CameraOptions = {
       //destinationType: this.camera.DestinationType.DATA_URL,
       //targetWidth: 1000,
       //targetHeight: 1000
       //quality: 100,
-      destinationType: this.camera.DestinationType.FILE_URI,
+      destinationType: this.camera.DestinationType.DATA_URL,
       sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
     }
     this.camera.getPicture(options).then((imageData) => {
       // imageData is a base64 encoded string
       this.base64Image = "data:image/jpeg;base64," + imageData;
-      //this.base64Image = imageData;
       this.Photo.img = this.base64Image;
-	  
+      /*let alert = this.alertCtrl.create({
+       title: 'img!',
+       subTitle: this.Photo.img,
+       buttons: ['OK']
+        });
+        alert.present();*/
+      this.loading.dismiss();
       console.log(this.Photo)
     }, (err) => {
       console.log(err);
     });
+    this.loading.dismiss();
   }
   uploadFile() {
-    this.showLoader()	
-    this.rest.restPost(this.Photo, "maps/welcome/upload_tind_image").then((result) => {
-      this.responseData = result;
+    this.showLoader('Uploading...')
+    console.log(this.Photo)
+    if ((this.Photo.act_id && this.Photo.img) != ('' && undefined)) {
+      this.rest.restPost(this.Photo, "maps/welcome/upload_tind_image").then((result) => {
+        this.responseData = result;
+        console.log(this.responseData)
+        this.result_path = this.responseData.error["text"]
+        this.dismiss(this.result_path)
+        this.presentToast("Berhasil Upload");
+        this.loading.dismiss();
+      }, (err) => {
+        this.loading.dismiss();
+        this.presentToast("Gagal Upload");
+      });
+    } else {
       this.loading.dismiss();
-    }, (err) => {
-      this.loading.dismiss();
-      this.presentToast("Gagal Upload");
-    });
-
-
-
-    /*let loader = this.loadingCtrl.create({
-      content: "Uploading..."
-    });
-    loader.present();
-    const fileTransfer: FileTransferObject = this.transfer.create();
-
-    let options: FileUploadOptions = {
-      fileKey: 'ionicfile',
-      fileName: 'ionicfile',
-      chunkedMode: false,
-      mimeType: "image/jpeg",
-      headers: {}
+      this.presentToast("Ambil Gambar Dahulu");
     }
-
-    fileTransfer.upload(this.base64Image, 'http://192.168.0.17/camera_test/upload.php', options)
-      .then((data) => {
-      console.log("Uploaded Successfully");
-      //this.imageFileName = "http://192.168.0.7:8080/static/images/ionicfile.jpg"
-      loader.dismiss();
-      this.presentToast("Image uploaded successfully");
-    }, (err) => {
-      //console.log(err);
-      loader.dismiss();
-      this.presentToast(err);
-    });*/
   }
 
 

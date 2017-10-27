@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController,ToastController, ModalController } from 'ionic-angular';
 import { RestProvider } from '../../providers/rest/rest'
+import { OnephotoPage } from '../onephoto/onephoto'
+
 
 /**
  * Generated class for the OnetindakanPage page.
@@ -15,46 +17,128 @@ import { RestProvider } from '../../providers/rest/rest'
   templateUrl: 'onetindakan.html',
 })
 export class OnetindakanPage {
-  userDetails: any;		
-  area_id:any;
-  action:any;
-  amount:any;
-  subaction:any;
-  area:string;
-  Status = {"username": "", "token": "", "id_area": "","stindakan" : "", "komentar" : ""};
+  userDetails: any;
+  area_id: any;
+  area: string;
+  Status = { "username": "", "token": "", "id_area": "", "stindakan": "", "action_id": "", "komentar": "" };
   responseData
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider) {
-    const data_tindakan = JSON.parse(localStorage.getItem('tindakan'));
-    const data_info 	= JSON.parse(localStorage.getItem('info'));
-    this.area_id 		= data_info
-    //console.log(this.area_id)
-
-    for (var i = 0; i < data_tindakan.length; i++) {
-		if(data_tindakan[i]["act_area_id"] == this.area_id){
-		  this.action = data_tindakan[i]["action"]
-		  this.amount = data_tindakan[i]["amount"]
-		  this.subaction = data_tindakan[i]["subaction"]
-		  this.area = data_tindakan[i]["act_area_id"]
-		/*console.log(this.area)*/
-		}
+  komentar = {}
+  statustindakan = {}
+  aksitindakan: any
+  data_tindakan
+  loading
+  imagePath
+  Image
+  Fotos = "http://3.bp.blogspot.com/-bhG66kbQqUM/Ucvsa4lN6vI/AAAAAAAAQ-U/YD4DKWT_7O8/s1600/14.jpg";
+  resultpath;
+  bom
+  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider, public loadingCtrl: LoadingController, public toastCtrl: ToastController, public modalCtrl: ModalController) {
+    this.data_tindakan = JSON.parse(localStorage.getItem('tindakan'));
+    this.aksitindakan = this.data_tindakan.action_plan;
+    //console.log(this.aksitindakan);
+    if (this.aksitindakan != undefined) {
+      const data_info = JSON.parse(localStorage.getItem('info'));
+      this.area_id = data_info
+     // console.log(data_info);
+      for (var i = 0; i < this.aksitindakan.length; i++) {
+        if (this.aksitindakan[i]["act_area_id"] == this.area_id) {
+          this.area = this.aksitindakan[i]["act_area_id"]
+        //  console.log(this.area)
+        }
+      }
+    } else {
+      console.log("Tidak ada Tindakan")
     }
-    console.log(this.Status)
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad OnetindakanPage');
+    //console.log('ionViewDidLoad OnetindakanPage');
+    //console.log(this.resultpath)
+    this.resultpath = this.resultpath
   }
-  sendTindakan(){
-	const data = JSON.parse(localStorage.getItem('userDrupadi'));
-	this.userDetails 		= data.userData;
-	this.Status.username 	= this.userDetails.username;
-	this.Status.token 		= this.userDetails.token;  
-	this.Status.id_area 	= this.area_id;  
-	
-    this.rest.restPost(this.Status, "maps/welcome/update_tindakan").then((result) => {		
-		this.responseData 		= result;
-		//console.log(this.data)
-      });
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 6000,
+      position: 'bottom'
+    });
+
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+
+    toast.present();
+  }
+  showLoader() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Mengirim...',
+    });
+
+    this.loading.present();
+  }
+  sendTindakan(action_id: any) {
+
+    const data = JSON.parse(localStorage.getItem('userDrupadi'));
+    this.userDetails = data.userData;
+    this.Status.username = this.userDetails.username;
+    this.Status.token = this.userDetails.token;
+    this.Status.id_area = this.area_id;
+    this.Status.action_id = action_id
+    if (this.komentar[action_id]) {
+      this.Status.komentar = this.komentar[action_id]
+    }
+    //console.log(this.statustindakan)
+    //console.log(action_id)
+
+    if (this.statustindakan[action_id]) {
+      this.Status.stindakan = this.statustindakan[action_id]
+    }
+    //console.log(this.Status)
+    //console.log(this.komentar[action_id])
+    this.showLoader()
+    if(this.Status.stindakan != ('' && undefined)) {
+    this.rest.restPost(this.Status, "maps/welcome/update_tindakan").then((result) => {
+      this.responseData = result;
+      //console.log(this.responseData.error["text"])
+      this.loading.dismiss();
+      this.presentToast(this.responseData.error["text"]);
+    }, (err) => {
+      this.loading.dismiss();
+      this.presentToast("Gagal Mengirim");
+    });
+  }else {
+    this.loading.dismiss();
+    this.presentToast("Isikan terlebih dahulu");
+  }
+  }
+  viewPhoto(action_id: any){
+    //console.log(this.resultpath, "2")
+
+    for (var i = 0; i < this.aksitindakan.length; i++) {
+      if (this.aksitindakan[i]["action_id"] == action_id) {
+        this.imagePath = this.aksitindakan[i]["imagepath"]
+        //console.log(this.imagePath)
+        this.Image = this.rest.base_url + 'assets/attach/' + this.data_tindakan.dtmaps["org_id"] +'/tindakan/'+ this.area_id + '/';
+        //this.Image = this.Fotos
+        //this.Image = this.rest.base_url + 'assets/attach/' + this.data_tindakan.dtmaps["org_id"] + '/tindakan/';
+        const modal = this.modalCtrl.create(OnephotoPage, { Path: this.Image, imagePath:this.imagePath, resultPath : this.resultpath, action_id: action_id, area_id : this.area_id });modal.onDidDismiss(data => {
+          this.resultpath = data;
+          this.ionViewDidLoad();
+        })
+        modal.present();
+
+      }
+    }
+  }
+  
+  lihatPhoto(img:any,actid:any,areaid:any){ 
+	this.imagePath = img;
+	this.Image = this.rest.base_url + 'assets/attach/'+ this.data_tindakan.dtmaps["org_id"] +'/tindakan/'+areaid+'/';	
+	const modal = this.modalCtrl.create(OnephotoPage, { Path: this.Image, imagePath:this.imagePath, resultPath : this.resultpath, action_id: actid, area_id : areaid });
+	modal.onDidDismiss(data => {
+	  this.resultpath = data;
+	  this.ionViewDidLoad();
+	})
+	modal.present();
   }
 }

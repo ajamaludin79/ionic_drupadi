@@ -26,7 +26,7 @@ export class HomePage {
     this.mapData.token = this.userDetails.token;
     this.mapData.action = "ionic_maps";
   }
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.loadMap();
   }
   showLoader() {
@@ -53,8 +53,8 @@ export class HomePage {
     this.showLoader()
     this.rest.restPost(this.mapData, "maps/welcome/ionic_maps").then((result) => {
       this.responseData = result;
-      console.log(this.responseData)
-      localStorage.setItem('tindakan', JSON.stringify(this.responseData.action_plan));
+      console.log(this.responseData);
+      localStorage.setItem('tindakan', JSON.stringify(this.responseData));
       this.namaproyek = this.responseData.dtmaps["pry_name"];
       var centermap = [this.responseData.dtmaps["lat"], this.responseData.dtmaps["long"]] // data server
       let LatLng = new google.maps.LatLng(centermap[0], centermap[1]);
