@@ -16,7 +16,7 @@ import { RestProvider } from '../../providers/rest/rest'
 export class ModalPage {
   userDetails: any;
   responseData: any;
-  proyekData = { "username": "", "action": "", "token": "" }
+  proyekData = { "username": "", "action": "", "token": "", "pry_id": "" }
   proyek:any;
   loading:any;
   items:any
@@ -32,7 +32,7 @@ export class ModalPage {
     //console.log(this.mapData)
     this.searchQuery = '';
 
-    this.getproyek()
+    this.getproyek();
 
   }
 
@@ -65,23 +65,36 @@ export class ModalPage {
 
     toast.present();
   }
-proyekMap(pry_id:any){
+proyekMap(pry_id:any){ 
+	//alert(proyekData);
   //console.log(pry_id)
   //  this.showLoader()
-    this.viewCtrl.dismiss(pry_id);
+    //this.viewCtrl.dismiss(pry_id);
     //this.loading.dismiss();
+		
+	this.proyekData.pry_id = pry_id;
+	this.showLoader()
+	this.rest.restPost(this.proyekData, "maps/welcome/detail_proyek").then((result) => {
+	this.responseData = result;
+		console.log(this.responseData)    
+    this.loading.dismiss();
+  }, (err) => {
+      this.presentToast("Tidak terhubung ke server");
+      this.loading.dismiss();
+  });
 }
 getproyek(){
   this.showLoader()
   this.rest.restPost(this.proyekData, "maps/welcome/ionic_proyek").then((result) => {
     this.responseData = result
+    //console.log(this.responseData)
     localStorage.setItem('proyek', JSON.stringify(this.responseData.projects));
     this.proyek = JSON.parse(localStorage.getItem('proyek'));
     this.loading.dismiss();
   }, (err) => {
       this.presentToast("Tidak terhubung ke server");
       this.loading.dismiss();
-    });
+  });
 }
 getItems(search) {
       this.proyek = JSON.parse(localStorage.getItem('proyek'));
