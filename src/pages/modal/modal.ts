@@ -76,8 +76,9 @@ proyekMap(pry_id:any){
 	this.showLoader()
 	this.rest.restPost(this.proyekData, "maps/welcome/detail_proyek").then((result) => {
 	this.responseData = result;
-		console.log(this.responseData)    
-    this.loading.dismiss();
+		//console.log(this.responseData) ;   
+    this.viewCtrl.dismiss(pry_id);
+	this.loading.dismiss();
   }, (err) => {
       this.presentToast("Tidak terhubung ke server");
       this.loading.dismiss();

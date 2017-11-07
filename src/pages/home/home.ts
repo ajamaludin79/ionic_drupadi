@@ -82,36 +82,38 @@ export class HomePage {
       var cords = [], areaid = '';
       for (var i = 0; i < polygon.length; i++) {
         var arr = polygon[i].split(" ");
-        areaid = this.responseData.area_id[i];
+		if(arr.length>0){
+			areaid = this.responseData.area_id[i];
 
-        for (var j = 0; j < arr.length; j++) {
-          var point = arr[j].split(",");
-          //console.log(point)
-          cords.push(new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1])));
-        }
-        bounds.extend(cords[cords.length - 1])
+			for (var j = 0; j < arr.length; j++) {
+			  var point = arr[j].split(",");
+			  //console.log(point)
+			  cords.push(new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1])));
+			}
+			bounds.extend(cords[cords.length - 1])
 
-        var polygons = (new google.maps.Polygon({
-          paths: cords,
-          map: this.map,
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#FF0000',
-          fillOpacity: 0.35,
-          area_id: areaid
-        }));
-        var y = this;
-        google.maps.event.addListener(polygons, 'click', function() { //alert(this.area_id);
-          //google.maps.event.addListener(polygons,'click',  () => {
-          y.ngZone.run(() => {
-            var x = this.area_id;
-            y.blok(x);
-          });
-        });
-        //polygons.setMap(this.map);
+			var polygons = (new google.maps.Polygon({
+			  paths: cords,
+			  map: this.map,
+			  strokeColor: '#FF0000',
+			  strokeOpacity: 0.8,
+			  strokeWeight: 2,
+			  fillColor: '#FF0000',
+			  fillOpacity: 0.35,
+			  area_id: areaid
+			}));
+			var y = this;
+			google.maps.event.addListener(polygons, 'click', function() { //alert(this.area_id);
+			  //google.maps.event.addListener(polygons,'click',  () => {
+			  y.ngZone.run(() => {
+				var x = this.area_id;
+				y.blok(x);
+			  });
+			});
+			//polygons.setMap(this.map);
 
-        cords = [];
+			cords = [];
+		}	
       }
       this.map.fitBounds(bounds);
 
