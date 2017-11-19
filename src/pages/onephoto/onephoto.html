@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-navbar color="dark">
+    <ion-title text-center>{{action_id}}</ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+          <span ion-text color="primary" showWhen="ios">Kembali</span>
+          <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+        </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content class="twitter">
+  <div *ngIf="imagePath1;else kosongs">
+    <ion-card *ngIf="Photos">
+      <ion-card-content>
+        <img src="{{Photos}}" *ngIf="Photos">
+      </ion-card-content>
+    </ion-card>
+    <div text-center>
+      <button ion-button small color="danger" (click)="gantiPhoto(action_id, area_ids)">Ganti Photo</button>
+    </div>
+  </div>
+
+  <ng-template #kosongs>
+    <div text-center margin-left margin-top>
+      <ion-grid>
+        <ion-row justify-content-center *ngIf="!base64Image">
+          <ion-col col-8>
+            Tidak Ada Photo
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-grid>
+        <ion-card *ngIf="base64Image">
+          <ion-card-content>
+            <div text-center>
+              <img src="{{base64Image}}" *ngIf="base64Image">
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <ion-row>
+          <ion-col>
+            <button ion-button small (click)="takePicture()">
+          Ambil gambar
+        </button>
+          </ion-col>
+          <ion-col>
+            <button ion-button small color="danger" (click)="uploadFile()">Upload</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </ng-template>
+</ion-content>
