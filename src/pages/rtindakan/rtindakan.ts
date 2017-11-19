@@ -14,12 +14,17 @@ import { NavController, NavParams } from 'ionic-angular';
   templateUrl: 'rtindakan.html',
 })
 export class RtindakanPage {
+  /* rlaporan = { "username": "", "token": "", "proyek_id" : "" };
+  userDetails: any;
+  responseData: any; */
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams) {    
+	const area_info = JSON.parse(localStorage.getItem('tindakan'));    
+    console.log(area_info["action_plan"]);    
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad RtindakanPage');
+    //console.log('ionViewDidLoad RtindakanPage');
   }
 
 }

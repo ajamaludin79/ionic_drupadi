@@ -19,21 +19,23 @@
 </ion-header>
 
 
-<ion-content>
+<ion-content class="twitter">
   <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="getItems($event)" (cancel)="onCancelSearchbar($event)" (clear)="onClearSearchbar($event)" placeholder="Cari proyek"></ion-searchbar>
   <div *ngIf="proyek != 0;else kosong">
-  <ion-card *ngFor="let item of proyek">
+    <div *ngFor="let item of proyek">
+  <ion-card *ngIf="item.pry_name != namajalan && item.pry_id != proyekjalans" >
   <ion-card-content>
       <p>{{item.pry_name}} </p>
       <ion-grid>
         <ion-row>
           <ion-col>
-            <button ion-button outline small block color="danger" (click)="proyekMap(item.pry_id)" >Lihat</button>
+            <button ion-button outline small block color="danger" (click)="proyekMap(item.pry_id)" >Pilih Proyek Ini</button>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-content>
     </ion-card>
+  </div>
   </div>
     <ng-template #kosong>
       <div text-center margin-left margin-top>

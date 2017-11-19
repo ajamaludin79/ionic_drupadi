@@ -43,7 +43,8 @@ export class GantiphotoPage {
     let toast = this.toastCtrl.create({
       message: msg,
       duration: 3000,
-      position: 'bottom'
+      position: 'top',
+      showCloseButton: true
     });
 
     toast.onDidDismiss(() => {
@@ -54,6 +55,7 @@ export class GantiphotoPage {
   }
   showLoader(msg) {
     this.loading = this.loadingCtrl.create({
+      spinner: 'ios',
       content: msg,
     });
 

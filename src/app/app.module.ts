@@ -12,13 +12,11 @@ import { OnetindakanPage } from '../pages/onetindakan/onetindakan';
 import { OnephotoPage } from '../pages/onephoto/onephoto';
 import { RinfoPage } from '../pages/rinfo/rinfo';
 import { RtindakanPage } from '../pages/rtindakan/rtindakan';
-import { RkomentarPage } from '../pages/rkomentar/rkomentar';
 import { LoginPage } from '../pages/login/login'
 import { PenggunaPage } from '../pages/pengguna/pengguna'
 import { ModalPage } from '../pages/modal/modal'
 import { GantiphotoPage } from '../pages/gantiphoto/gantiphoto'
 
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { HttpModule } from "@angular/http";
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -37,11 +35,10 @@ import { RestProvider } from '../providers/rest/rest';
     OnephotoPage,
     RinfoPage,
     RtindakanPage,
-    RkomentarPage,
     LoginPage,
     PenggunaPage,
     ModalPage,
-    GantiphotoPage
+    GantiphotoPage,
   ],
   imports: [
     BrowserModule, HttpModule,
@@ -59,11 +56,10 @@ import { RestProvider } from '../providers/rest/rest';
     OnephotoPage,
     RinfoPage,
     RtindakanPage,
-    RkomentarPage,
     LoginPage,
     PenggunaPage,
     ModalPage,
-    GantiphotoPage
+    GantiphotoPage,
   ],
   providers: [
     Camera,
@@ -71,8 +67,6 @@ import { RestProvider } from '../providers/rest/rest';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     RestProvider,
-    FileTransfer,
-    FileTransferObject,
   ]
 })
 export class AppModule {}

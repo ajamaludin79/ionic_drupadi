@@ -64,19 +64,22 @@ export class OnephotoPage {
     console.log(resultone)
     this.imagePath = this.navParams.get('imagePath');
 
+      //sehabis ganti photo
     if ((resultone != (null && '')) && (this.imagePath != resultone) && (this.action_id == this.navParams.get('photoact') )) {
       this.imagePath1 = resultone
       this.Path = this.navParams.get('Path');
       this.Photos = this.Path + resultone;
       this.loading.dismiss();
       console.log("1", this.imagePath, this.action_id)
-    } else if (this.imagePath != ('' && null)) {
+    } //ada imagepath
+    else if (this.imagePath != ('' && null)) {
       this.imagePath1 = this.imagePath
       this.Path = this.navParams.get('Path');
       this.Photos = this.Path + this.imagePath1;
       this.loading.dismiss();
       console.log("2", this.imagePath)
-    } else if (this.imagePath == '') {
+    } //saat imagepath masih kosong
+    else if (this.imagePath == '') {
       this.imagePath1 = this.imagePath
       this.loading.dismiss();
       console.log("3", this.imagePath)
@@ -93,7 +96,8 @@ export class OnephotoPage {
     let toast = this.toastCtrl.create({
       message: msg,
       duration: 4000,
-      position: 'bottom'
+      position: 'top',
+      showCloseButton: true
     });
 
     toast.onDidDismiss(() => {
@@ -104,6 +108,7 @@ export class OnephotoPage {
   }
   showLoader(msg) {
     this.loading = this.loadingCtrl.create({
+      spinner: 'ios',
       content: msg,
     });
 

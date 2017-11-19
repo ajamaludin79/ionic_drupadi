@@ -16,14 +16,16 @@ import { RestProvider } from '../../providers/rest/rest'
 })
 export class RinfoPage {
 
-  ringkasaninfo = { "area_id": "", "username": "", "action": "", "token": "" };
+  /* ringkasaninfo = { "username": "", "token": "", "proyek_id" : "" };
   userDetails: any;
-  responseData: any;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider) {
+  responseData: any; */
+  constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider) {    
+    const area_info = JSON.parse(localStorage.getItem('tindakan'));    
+    console.log(area_info["area_info"]);
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad RinfoPage');
+    //console.log('ionViewDidLoad RinfoPage');
     /*this.rest.restPost(this.mapData, "maps/welcome/get_maps_info").then((result) => {
       this.responseData = result;
       console.log(this.responseData)

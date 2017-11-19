@@ -21,6 +21,8 @@ export class ModalPage {
   loading:any;
   items:any
   searchQuery;
+  namajalan
+  proyekjalans
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public rest: RestProvider, public viewCtrl: ViewController, public loadingCtrl: LoadingController, private toastCtrl: ToastController) {
@@ -32,7 +34,7 @@ export class ModalPage {
     //console.log(this.mapData)
     this.searchQuery = '';
 
-    this.getproyek();
+    this.getproyek()
 
   }
 
@@ -46,6 +48,7 @@ export class ModalPage {
   }
   showLoader() {
     this.loading = this.loadingCtrl.create({
+      spinner: 'ios',
       content: 'Loading..',
     });
 
@@ -65,24 +68,19 @@ export class ModalPage {
 
     toast.present();
   }
-proyekMap(pry_id:any){ 
-	//alert(proyekData);
+proyekMap(pry_id:any){
   //console.log(pry_id)
-  //  this.showLoader()
-    //this.viewCtrl.dismiss(pry_id);
-    //this.loading.dismiss();
-		
-	this.proyekData.pry_id = pry_id;
-	this.showLoader()
-	this.rest.restPost(this.proyekData, "maps/welcome/detail_proyek").then((result) => {
-	this.responseData = result;
-		//console.log(this.responseData) ;   
-    this.viewCtrl.dismiss(pry_id);
-	this.loading.dismiss();
-  }, (err) => {
-      this.presentToast("Tidak terhubung ke server");
-      this.loading.dismiss();
-  });
+    this.proyekData.pry_id = pry_id;
+  	this.showLoader()
+  	this.rest.restPost(this.proyekData, "maps/welcome/detail_proyek").then((result) => {
+  	this.responseData = result;
+  		//console.log(this.responseData) ;
+      this.viewCtrl.dismiss(pry_id);
+  	this.loading.dismiss();
+    }, (err) => {
+        this.presentToast("Tidak terhubung ke server");
+        this.loading.dismiss();
+    });
 }
 getproyek(){
   this.showLoader()
@@ -90,12 +88,15 @@ getproyek(){
     this.responseData = result
     //console.log(this.responseData)
     localStorage.setItem('proyek', JSON.stringify(this.responseData.projects));
+    var proyekjalan = JSON.parse(localStorage.getItem('tindakan'));
+    this.namajalan = proyekjalan.dtmaps["pry_name"];
+    this.proyekjalans = proyekjalan.dtmaps["pry_id"];
     this.proyek = JSON.parse(localStorage.getItem('proyek'));
     this.loading.dismiss();
   }, (err) => {
       this.presentToast("Tidak terhubung ke server");
       this.loading.dismiss();
-  });
+    });
 }
 getItems(search) {
       this.proyek = JSON.parse(localStorage.getItem('proyek'));
@@ -105,20 +106,16 @@ getItems(search) {
       if (val && val.trim() != '') {
     this.proyek = this.proyek.filter((item) => {
       let name: any = item;
-      console.log(name.pry_name)
+      //console.log(name.pry_name)
       return (name.pry_name.toLowerCase().indexOf(val.toLowerCase()) > -1);
     })
   }
 }
 onCancelSearchbar(search) {
   this.proyek = JSON.parse(localStorage.getItem('proyek'));
-
-
  }
 
  onClearSearchbar(search) {
    this.proyek = JSON.parse(localStorage.getItem('proyek'));
-
-
  }
 }
